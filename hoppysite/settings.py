@@ -26,7 +26,9 @@ SECRET_KEY = 'django-insecure-v+e!_0hj&(cl$zxlmi7%kx2m)uuzq6xt)8y%hq4*+q7z+lm=w5
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["127.0.0.1", ".onrender.com"] 
+
+CSRF_TRUSTED_ORIGINS = ["https://*.onrender.com/"] 
 
 
 # Application definition
@@ -49,6 +51,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'hoppysite.urls'
