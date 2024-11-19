@@ -19,4 +19,4 @@ User.objects.filter(username=os.environ["DJANGO_SUPERUSER_USERNAME"]).exists() o
     User.objects.create_superuser(os.environ["DJANGO_SUPERUSER_USERNAME"], os.environ["DJANGO_SUPERUSER_EMAIL"], os.environ["DJANGO_SUPERUSER_PASSWORD"])
 EOF
 
-#teste2
+#teste_build
