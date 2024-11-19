@@ -1,0 +1,13 @@
+{% extends 'base.html' %} {% block title %} {{ post.name }} {{
+    post.detail }} {% endblock title %} {% block content %}
+    <h2>Detalhes do Post "{{post.name}}{{ post.detail}}"</h2>
+    
+    <section class="dados-de-post">
+      <img src="{{ post.poster_url }}" alt="Imagem do post {{ post.name}}" />
+      <ul>
+        <li>Nome: {{ post.name }}</li>
+        <li>Descrição: {{ post.description }}</li>
+      </ul>
+    </section>
+    
+    {% endblock content %}
