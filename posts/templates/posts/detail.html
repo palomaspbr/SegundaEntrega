@@ -12,4 +12,33 @@
       </ul>
     </section>
     
-    {% endblock content %}
+    <hr>
+
+    <section>
+        <header>
+            <h3>Cometários</h3>
+        </header>
+        <ul>
+            {% if post.review_set.all %}
+                {% for review in post.review_set.all %}
+                    <figure>
+                        <blockquote>
+                            "{{ review.text }}"
+                        </blockquote>
+                        <figcaption>—{{ review.author }}</figcaption>
+                    </figure>
+                {% endfor %}
+            {% else %}
+                <p>Ainda não existe nenhum comentário para este post.</p>
+            {% endif %}
+        </ul>
+    </section>
+
+</ul>
+    
+<hr>
+
+<a href="{% url 'posts:comment' post.pk %}"><button>Comente</button></a>
+</section>
+
+{% endblock content %}

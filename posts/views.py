@@ -2,9 +2,10 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from .temp_data import posts_data
 from django.http import HttpResponseRedirect
-from django.urls import reverse
-from .models import Post
+from django.urls import reverse, reverse_lazy
+from .models import Post, Review, Category
 from django.views import generic
+from .forms import PostForm, ReviewForm
 
 def detail_post(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
@@ -36,7 +37,9 @@ def create_post(request):
         return HttpResponseRedirect(
             reverse('posts:detail', args=(post.id, )))
     else:
-        return render(request, 'posts/create.html', {})
+        form = PostForm()
+        context = {'form': form}
+        return render(request, 'posts/create.html', context)
     
 def update_post(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
@@ -62,3 +65,25 @@ def delete_post(request, post_id):
 
     context = {'post': post}
     return render(request, 'posts/delete.html', context)
+
+def create_comment(request, post_id):
+    post = get_object_or_404(Post, pk=post_id)
+    if request.method == 'POST':
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            review_author = form.cleaned_data['author']
+            review_text = form.cleaned_data['text']
+            review = Review(author=review_author,
+                            text=review_text,
+                            post=post)
+            review.save()
+            return HttpResponseRedirect(
+                reverse('posts:detail', args=(post_id, )))
+    else:
+        form = ReviewForm()
+    context = {'form': form, 'post': post}
+    return render(request, 'posts/review.html', context)
+
+class CategoryListView(generic.ListView):
+    model = Category
+    template_name = 'posts/categorys.html'
