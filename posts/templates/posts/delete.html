@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content %}
+<form method="post" action="{% url 'posts:delete' post.id %}">
+  {% csrf_token %}
+  <p>
+    Você tem certeza que deseja apagar o post "{{ post.name }}"?
+  </p>
+  <button type="submit">Apagar</button>
+</form>
+{% endblock content %}

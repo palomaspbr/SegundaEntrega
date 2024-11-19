@@ -1,37 +1,64 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from .temp_data import posts_data
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from .models import Post
+from django.views import generic
 
 def detail_post(request, post_id):
-    context = {'post': posts_data[post_id - 1]}
+    post = get_object_or_404(Post, pk=post_id)
+    context = {'post': post}
     return render(request, 'posts/detail.html', context)
 
 def list_posts(request):
-    context = {"posts_list": posts_data}
+    posts_list = Post.objects.all()
+    context = {'posts_list': posts_list}
     return render(request, 'posts/index.html', context)
-
 
 def search_posts(request):
     context = {}
     if request.GET.get('query', False):
-        context = {
-            "posts_list": [
-                m for m in posts_data
-                if request.GET['query'].lower() in m['name'].lower()
-            ]
-        }
+        search_term = request.GET['query'].lower()
+        posts_list = Post.objects.filter(name__icontains=search_term)
+        context = {"posts_list": posts_list}
     return render(request, 'posts/search.html', context)
 
 def create_post(request):
     if request.method == 'POST':
-        posts_data.append({
-            'name': request.POST['name'],
-            'descritpion': request.POST['description'],
-            'poster_url': request.POST['poster_url']
-        })
+        post_name = request.POST['name']
+        post_description = request.POST['description']
+        post_poster_url = request.POST['poster_url']
+        post = Post(name=post_name,
+                      description=post_description,
+                      poster_url=post_poster_url)
+        post.save()
         return HttpResponseRedirect(
-            reverse('movies:detail', args=(len(posts_data), )))
+            reverse('posts:detail', args=(post.id, )))
     else:
         return render(request, 'posts/create.html', {})
+    
+def update_post(request, post_id):
+    post = get_object_or_404(Post, pk=post_id)
+
+    if request.method == "POST":
+        post.name = request.POST['name']
+        post.description = request.POST['description']
+        post.poster_url = request.POST['poster_url']
+        post.save()
+        return HttpResponseRedirect(
+            reverse('posts:detail', args=(post.id, )))
+
+    context = {'post': post}
+    return render(request, 'posts/update.html', context)
+
+
+def delete_post(request, post_id):
+    post = get_object_or_404(Post, pk=post_id)
+
+    if request.method == "POST":
+        post.delete()
+        return HttpResponseRedirect(reverse('posts:index'))
+
+    context = {'post': post}
+    return render(request, 'posts/delete.html', context)
