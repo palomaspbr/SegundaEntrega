@@ -9,7 +9,7 @@ python manage.py collectstatic --no-input
 python manage.py migrate
 
 # create superuser if missing
-cat < python manage.py shell
+cat < | python manage.py shell
 import os
 from django.contrib.auth import get_user_model
 
@@ -19,4 +19,4 @@ User.objects.filter(username=os.environ["DJANGO_SUPERUSER_USERNAME"]).exists() o
     User.objects.create_superuser(os.environ["DJANGO_SUPERUSER_USERNAME"], os.environ["DJANGO_SUPERUSER_EMAIL"], os.environ["DJANGO_SUPERUSER_PASSWORD"])
 EOF
 
-#teste
+#teste2
